@@ -1,9 +1,6 @@
 package com.example.DualStore.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -20,8 +17,9 @@ public class Category {
     private int id;
     private String name;
     private String imageName;
-    private Boolean isActive;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     public int getId() {
         return id;
@@ -39,19 +37,19 @@ public class Category {
         this.name = name;
     }
 
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
     public String getImageName() {
         return imageName;
     }
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 }

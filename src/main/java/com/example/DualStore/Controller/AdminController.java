@@ -7,12 +7,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ssl.SslProperties;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.ObjectUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Controller
 @RequestMapping("/admin")
@@ -38,36 +44,37 @@ public class AdminController {
 
 
     @PostMapping("/saveCategory")
-    public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) {
+    public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
+                               HttpSession session) throws IOException {
 
-        String imageName = file != null ? file.getOriginalFilename(): "default.jpg";
-
+        String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
         category.setImageName(imageName);
 
-        // Проверка, существует ли категория
         Boolean existCategory = categoryService.existCategory(category.getName());
 
         if (existCategory) {
-            // Установка сообщения об ошибке в сессию
             session.setAttribute("errorMsg", "Category Name already exists");
         } else {
-            // Сохранение категории
+
             Category saveCategory = categoryService.saveCategory(category);
 
-            // Проверка успешности сохранения
             if (saveCategory == null) {
-                // Установка сообщения об ошибке в сессию
-                session.setAttribute("errorMsg", "Not Saved! Internal server error");
+                session.setAttribute("errorMsg", "Not saved ! internal server error");
             } else {
-                // Установка сообщения об успехе в сессию
+
+                File saveFile = new ClassPathResource("static/img").getFile();
+
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+                        + file.getOriginalFilename());
+
+                // System.out.println(path);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
                 session.setAttribute("succMsg", "Saved successfully");
             }
         }
 
-        // Перенаправление на страницу категорий
-        return "redirect:/category";
+        return "redirect:/admin/category";
     }
-
-
 
 }
