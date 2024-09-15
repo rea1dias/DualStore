@@ -9,6 +9,8 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
+
+@Table(name = "category")
 public class Category {
 
 

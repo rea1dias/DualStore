@@ -5,6 +5,7 @@ import com.example.DualStore.Repository.CategoryRepository;
 import com.example.DualStore.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.ObjectUtils;
 
 import java.util.List;
 
@@ -31,7 +32,18 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.existsByName(name) ;
     }
 
+    @Override
+    public Boolean deleteCategory(int id) {
 
+        Category category = categoryRepository.findById(id).orElse(null);
+
+        if (category == null) {
+            categoryRepository.delete(category);
+            return true;
+
+        }
+        return false;
+    }
 
 
 }
