@@ -37,12 +37,19 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findById(id).orElse(null);
 
-        if (category == null) {
+        if (category != null) {
             categoryRepository.delete(category);
             return true;
 
         }
         return false;
+    }
+
+    @Override
+    public Category getCategoryById(int id) {
+
+        Category category = categoryRepository.findById(id).orElse(null);
+        return category;
     }
 
 

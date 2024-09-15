@@ -98,4 +98,52 @@ public class AdminController {
 
     }
 
+    @GetMapping("/loadEditCategory/{id}")
+    public String loadEditCategory(@PathVariable int id, Model m) {
+        m.addAttribute("category", categoryService.getCategoryById(id));
+        return "admin/edit_category";
+    }
+
+
+    @PostMapping("/updateCategory")
+    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
+                                 HttpSession session) throws IOException {
+
+        Category oldCategory = categoryService.getCategoryById(category.getId());
+
+        String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
+
+
+        if (category != null) {
+
+            oldCategory.setName(category.getName());
+            oldCategory.setIsActive(category.getIsActive());
+            oldCategory.setImageName(imageName);
+
+        }
+
+        Category updateCategory = categoryService.saveCategory(oldCategory);
+
+        if (updateCategory != null) {
+
+            if (!file.isEmpty()) {
+                File saveFile = new ClassPathResource("static/img").getFile();
+
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+                        + file.getOriginalFilename());
+
+                // System.out.println(path);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            session.setAttribute("succMsg", "Category update success");
+        } else {
+            session.setAttribute("errorMsg", "something wrong on server");
+        }
+
+
+        return "redirect:/admin/loadEditCategory/"+category.getId();
+
+    }
+
 }
