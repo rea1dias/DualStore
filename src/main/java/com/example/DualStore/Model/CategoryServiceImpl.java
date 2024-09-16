@@ -1,4 +1,4 @@
-package com.example.DualStore.Impl;
+package com.example.DualStore.Model;
 
 import com.example.DualStore.Model.Category;
 import com.example.DualStore.Repository.CategoryRepository;
@@ -40,7 +40,6 @@ public class CategoryServiceImpl implements CategoryService {
         if (category != null) {
             categoryRepository.delete(category);
             return true;
-
         }
         return false;
     }

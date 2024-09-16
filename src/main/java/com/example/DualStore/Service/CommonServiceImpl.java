@@ -8,10 +8,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.condition.RequestConditionHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 
-
-
-
-
 @Service
 public class CommonServiceImpl implements CommonService {
 
